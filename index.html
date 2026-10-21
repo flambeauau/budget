@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1b1b1b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Харчі">
+  <title>Харчі — бюджет на їжу</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="locked">
+  <section id="login" class="login">
+    <form id="loginForm" class="login-card">
+      <div class="brand">харчі<span class="dot"></span></div>
+      <p>Увійди, щоб бачити свої покупки на всіх пристроях</p>
+      <label>Пошта<input name="email" type="email" autocomplete="email" required></label>
+      <label>Пароль<input name="password" type="password" autocomplete="current-password" required></label>
+      <span id="loginError" class="login-error"></span>
+      <button type="submit" class="btn-dark wide">Увійти</button>
+    </form>
+  </section>
+
+  <div class="frame">
+    <aside class="side">
+      <div class="brand">харчі<span class="dot"></span></div>
+
+      <div class="side-section">
+        <span class="side-label">Місяць</span>
+        <div class="period">
+          <button id="prev" class="round" aria-label="Попередній місяць">‹</button>
+          <div class="period-label">
+            <b id="periodLabel"></b>
+            <small id="periodHint"></small>
+          </div>
+          <button id="next" class="round" aria-label="Наступний місяць">›</button>
+        </div>
+      </div>
+
+      <div class="side-section">
+        <span class="side-label">Дані</span>
+        <button id="exportBtn" class="side-link">💾 Зберегти копію</button>
+        <label class="side-link">📂 Відновити з копії
+          <input type="file" id="importInput" accept="application/json,.json" hidden>
+        </label>
+        <button id="logoutBtn" class="side-link">🚪 Вийти</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="hello">
+        <label class="search">
+          <input id="search" type="search" placeholder="Пошук покупок" autocomplete="off">
+        </label>
+        <h1 id="greeting">Привіт!</h1>
+        <p id="subtitle"></p>
+      </header>
+
+      <div class="layout">
+        <div class="col-main">
+          <section class="cards">
+            <article class="card yellow spend">
+              <svg class="shape" viewBox="0 0 120 100" aria-hidden="true"><path d="M60 8c26-7 52 9 50 37s-22 46-50 43S6 70 10 44 34 15 60 8z"/></svg>
+              <span class="card-title">Витрати:</span>
+              <div class="big" id="sumSpent">0 CHF</div>
+              <div class="bars" id="dailyBars"></div>
+            </article>
+
+            <article class="card pink">
+              <svg class="shape" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 90C20 66 4 49 4 30a23 23 0 0 1 46-9 23 23 0 0 1 46 9c0 19-16 36-46 60z"/></svg>
+              <span class="card-title">В середньому:</span>
+              <div class="stats" id="sumAvg"></div>
+            </article>
+          </section>
+
+          <section class="list-block">
+            <div class="block-head">
+              <h2>Покупки</h2>
+              <button id="dayChip" class="chip" hidden></button>
+            </div>
+            <div id="list"></div>
+          </section>
+        </div>
+
+        <aside class="col-side panel">
+          <div class="block-head">
+            <h2>Календар</h2>
+            <span class="legend"><i class="lg-pay"></i>зарплата <i class="lg-has"></i>покупки</span>
+          </div>
+          <div class="cal" id="calendar"></div>
+          <button id="addBtn" class="btn-dark wide">+ Додати покупку</button>
+          <div id="top"></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <button id="fab" class="fab" aria-label="Додати покупку">+</button>
+
+  <dialog id="dlg">
+    <form id="form">
+      <h2 id="formTitle">Нова покупка</h2>
+
+      <label class="photo" id="photoBox">
+        <input type="file" id="photoInput" accept="image/*" hidden>
+        <img id="photoPreview" alt="" hidden>
+        <span id="photoHint">📷 Додати фото</span>
+      </label>
+      <button type="button" id="photoClear" class="text-btn" hidden>Прибрати фото</button>
+
+      <label>Назва
+        <input name="name" list="names" required autocomplete="off" placeholder="Напр. Сир кисломолочний">
+      </label>
+      <datalist id="names"></datalist>
+
+      <div class="row">
+        <label>Вага, г
+          <input name="weight" type="number" inputmode="decimal" min="0" step="any">
+        </label>
+        <label>Ціна, CHF
+          <input name="price" type="number" inputmode="decimal" min="0" step="any" required>
+        </label>
+      </div>
+
+      <label>Дата покупки
+        <input name="date" type="date" required>
+      </label>
+
+      <fieldset>
+        <legend>КБЖВ на 100 г</legend>
+        <div class="row four">
+          <label>Ккал<input name="kcal" type="number" inputmode="decimal" min="0" step="any"></label>
+          <label>Білки<input name="protein" type="number" inputmode="decimal" min="0" step="any"></label>
+          <label>Жири<input name="fat" type="number" inputmode="decimal" min="0" step="any"></label>
+          <label>Вугл.<input name="carbs" type="number" inputmode="decimal" min="0" step="any"></label>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" id="deleteBtn" class="btn-ghost danger" hidden>Видалити</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancelBtn" class="btn-ghost">Скасувати</button>
+        <button type="submit" class="btn-dark">Зберегти</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

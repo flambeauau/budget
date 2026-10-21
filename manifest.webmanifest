@@ -1,0 +1,9 @@
+{
+  "name": "Харчі — бюджет на їжу",
+  "short_name": "Харчі",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#faf7f1",
+  "theme_color": "#1b1b1b",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
